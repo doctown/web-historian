@@ -59,14 +59,23 @@ exports.handleRequest = function (req, res) {
         result += chunk.toString();
       });
       req.on('end', function() {
-        // Add to url to sites.txt
-        //var urlObject = JSON.parse(result);
-        //console.log('result'+result.slice(4));
-        archive.addUrlToList(result.slice(4), function() {
-          // Send status 302
-          // TODO: Pass error if error found
-          res.writeHead(302, helper.headers);
-          res.end();
+        // Check if result is a url that is archive
+        archive.isUrlArchived(result, function(found) {
+          //if true
+          if (found) {
+            // Load the url
+            sendStaticFileRequest(archive.paths.archivedSites + '/' + result, 'text/html');
+          } else { // else
+            // Add to url to sites.txt
+            archive.addUrlToList(result.slice(4), function() {
+              // Send status 302
+              // TODO: Pass error if error found
+              //res.writeHead(302, helper.headers);
+              // send the loading page html
+              //res.end();
+              sendStaticFileRequest('web/public/loading.html', 'text/html');
+            });
+          }
         });
       });
     }

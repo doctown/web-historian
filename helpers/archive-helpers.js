@@ -118,12 +118,11 @@ exports.downloadUrls = function(urls) {
     
       var filename = exports.paths.archivedSites + '/' + url;
       fs.writeFile(filename, data, function(err) {
-
-        console.log(filename);
         if (err) {
           throw new Error(err);
           callback(err);
         } else {
+        
         }
       });
     });
