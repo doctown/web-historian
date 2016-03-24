@@ -48,6 +48,13 @@ exports.readListOfUrls = function(callback) {
  * @returns true if it is in the list, false otherwise
  */
 exports.isUrlInList = function(url, callback) {
+  var found =false;
+  exports.readListOfUrls(function(urls){
+    if(urls.indexOf(url) !== -1){
+      found = true;
+    }
+    callback(found);
+  });
 };
 
 /*
@@ -57,16 +64,20 @@ exports.isUrlInList = function(url, callback) {
 exports.addUrlToList = function(url, callback) {
   // Call isUrlInList
   // If true retrurn
-  fs.appendFile(exports.paths.list, url + '\n', function(err) { // Append the list with this site
-    //Write object to the file
-    if (err) {
-      callback(err);
-    } else {
-      // When done, call callback
-      console.log(url);
-      callback();
+  exports.isUrlInList(url,function(found) {
+    if(!found) {
+      fs.appendFile(exports.paths.list, url + '\n', function(err) { // Append the list with this site
+        //Write object to the file
+        if (err) {
+          callback(err);
+        } else {
+          // When done, call callback
+          console.log(url);
+          callback();
+        }
+      });
     }
-  });
+});
 };
 
 /*

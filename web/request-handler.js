@@ -59,11 +59,10 @@ exports.handleRequest = function (req, res) {
         result += chunk.toString();
       });
       req.on('end', function() {
-
-        console.log('-----------------------------------------');
         // Add to url to sites.txt
-        var urlObject = JSON.parse(result);
-        archive.addUrlToList(urlObject.url, function() {
+        //var urlObject = JSON.parse(result);
+        //console.log('result'+result.slice(4));
+        archive.addUrlToList(result.slice(4), function() {
           // Send status 302
           // TODO: Pass error if error found
           res.writeHead(302, helper.headers);
