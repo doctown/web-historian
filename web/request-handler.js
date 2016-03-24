@@ -59,15 +59,16 @@ exports.handleRequest = function (req, res) {
         result += chunk.toString();
       });
       req.on('end', function() {
+        var url = result.slice(4);
         // Check if result is a url that is archive
-        archive.isUrlArchived(result, function(found) {
+        archive.isUrlArchived(url, function(found) {
           //if true
           if (found) {
             // Load the url
-            sendStaticFileRequest(archive.paths.archivedSites + '/' + result, 'text/html');
+            sendStaticFileRequest(archive.paths.archivedSites + '/' + url, 'text/html');
           } else { // else
             // Add to url to sites.txt
-            archive.addUrlToList(result.slice(4), function() {
+            archive.addUrlToList(url, function() {
               // Send status 302
               // TODO: Pass error if error found
               //res.writeHead(302, helper.headers);
