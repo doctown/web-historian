@@ -25,17 +25,69 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function() {
+/* 
+ * Gets the list of urls from the sites.txt file.
+ * @returns an object with the urls that are in the list.
+ */
+exports.readListOfUrls = function(callback) {
+  // Open the sites file
+  fs.readFile(exports.paths.list, 'utf-8', function(err, data) {
+    if (err) {
+      callback(err);
+    }
+    // Read the sites in to an array
+    var urls = data.split('\n');
+    //Call allback with sites array
+    callback(urls);
+  });
 };
 
-exports.isUrlInList = function() {
+/*
+ * Determines if a url is in the site list.
+ * @param: url - url address to check to see if it is in the sites.txt list
+ * @returns true if it is in the list, false otherwise
+ */
+exports.isUrlInList = function(url, callback) {
 };
 
-exports.addUrlToList = function() {
+/*
+ * Add a url to the sites.txt list.
+ * @param - url address of website to add to the sites file
+ */
+exports.addUrlToList = function(url, callback) {
+  // Call isUrlInList
+  // If true retrurn
+  fs.appendFile(exports.paths.list, url + '\n', function(err) { // Append the list with this site
+    //Write object to the file
+    if (err) {
+      callback(err);
+    } else {
+      // When done, call callback
+      console.log(url);
+      callback();
+    }
+  });
 };
 
-exports.isUrlArchived = function() {
+/*
+ * Determines if the url is saved as a file in the sites folder
+ * @param: url - the url to check if is in the sites folder
+ * @returns true if the url is archived, false otherwise
+ */
+exports.isUrlArchived = function(url, callback) {
+  fs.readdir(exports.paths.archivedSites, function(err, files) {
+    if (err) {
+      callback(false);
+    } else {
+      var isFound = files.indexOf(url) !== -1;
+      callback(isFound);
+    }
+  });
 };
 
+/* 
+ * Downloads the html page of the urls in the list that are not already archived.
+ */
 exports.downloadUrls = function() {
+  // 
 };
