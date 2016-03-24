@@ -64,9 +64,7 @@ describe('server', function() {
           .type('form')
           .send({ url: url })
           .expect(302, function (err) {
-            console.log('-------->in TEST 1:', err);
             if (!err) {
-              console.log('-------->in TEST 2:', err);
               var fileContents = fs.readFileSync(archive.paths.list, 'utf8');
               expect(fileContents).to.equal(url + '\n');
             }
@@ -153,7 +151,7 @@ describe('archive helpers', function() {
       setTimeout(function () {
         expect(fs.readdirSync(archive.paths.archivedSites)).to.deep.equal(urlArray);
         done();
-      }, 25);
+      }, 500);
     });
   });
 });

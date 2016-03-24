@@ -1,6 +1,9 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var request = require('request');
+var http = require('http');
+var helper = require('../web/http-helpers');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -48,9 +51,9 @@ exports.readListOfUrls = function(callback) {
  * @returns true if it is in the list, false otherwise
  */
 exports.isUrlInList = function(url, callback) {
-  var found =false;
-  exports.readListOfUrls(function(urls){
-    if(urls.indexOf(url) !== -1){
+  var found = false;
+  exports.readListOfUrls(function(urls) {
+    if (urls.indexOf(url) !== -1) {
       found = true;
     }
     callback(found);
@@ -64,8 +67,8 @@ exports.isUrlInList = function(url, callback) {
 exports.addUrlToList = function(url, callback) {
   // Call isUrlInList
   // If true retrurn
-  exports.isUrlInList(url,function(found) {
-    if(!found) {
+  exports.isUrlInList(url, function(found) {
+    if (!found) {
       fs.appendFile(exports.paths.list, url + '\n', function(err) { // Append the list with this site
         //Write object to the file
         if (err) {
@@ -77,7 +80,7 @@ exports.addUrlToList = function(url, callback) {
         }
       });
     }
-});
+  });
 };
 
 /*
@@ -98,7 +101,31 @@ exports.isUrlArchived = function(url, callback) {
 
 /* 
  * Downloads the html page of the urls in the list that are not already archived.
+ * @param: urls - An Array of urls
  */
-exports.downloadUrls = function() {
-  // 
+exports.downloadUrls = function(urls) {
+  urls.forEach(function(url) {
+    fullUrl = 'http://' + url.toString();
+    
+    request({
+      url: fullUrl,
+      method: 'GET',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      }
+    }, function(err, res, data) {
+    
+      var filename = exports.paths.archivedSites + '/' + url;
+      fs.writeFile(filename, data, function(err) {
+
+        console.log(filename);
+        if (err) {
+          throw new Error(err);
+          callback(err);
+        } else {
+        }
+      });
+    });
+  });
 };
