@@ -34,7 +34,8 @@ exports.handleRequest = function (req, res) {
       sendStaticFileRequest('web/public/styles.css', 'text/css');
     } else if (req.url.match(/\/www/)) { // if get request begins with www
       // check to see if file is in the archive
-      archive.isUrlArchived(req.url.slice(1), function(exists) {
+      archive.isUrlArchived(req.url.slice(1))
+      .then(function(exists) {
         if (exists) { // if true
           // call send static file reuest with the file name location
           sendStaticFileRequest(archive.paths.archivedSites + req.url, 'text/html');
@@ -43,6 +44,9 @@ exports.handleRequest = function (req, res) {
           res.writeHead(404, headers);
           res.end();
         }
+      })
+      .catch(function(err) {
+        console.log(err);
       });
     } else {
       var headers = helper.headers;
@@ -62,29 +66,32 @@ exports.handleRequest = function (req, res) {
       req.on('end', function() {
         var url = result.slice(4);
         // Check if result is a url that is archive
-        archive.isUrlArchived(url, function(found) {
+        archive.isUrlArchived(url)
+        .then(function(found) {
           //if true
           if (found) {
             // Load the url
             sendStaticFileRequest(archive.paths.archivedSites + '/' + url, 'text/html');
           } else { // else
             // Add to url to sites.txt
-            archive.addUrlToList(url, function() {
+            archive.addUrlToList(url)
+            .then(function() {
               // Send status 302
               // TODO: Pass error if error found
               //res.writeHead(302, helper.headers);
               // send the loading page html
               //res.end();
               sendStaticFileRequest('web/public/loading.html', 'text/html');
+            })
+            .catch(function(err) {
+              console.log(err);
             });
           }
+        })
+        .catch(function(err) {
+          console.log(err);
         });
       });
     }
   }
 };
-
-setInterval (htmlFetcher, 20000);
-
-//archive.paths.list
-

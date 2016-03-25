@@ -3,22 +3,27 @@
 
 var archive = require('../helpers/archive-helpers');
 //Call Readlisturls 
-var htmlfetch = function () {
-  archive.readListOfUrls(function(urls) {
+(function () {
+  archive.readListOfUrls()
+  .then(function(urls) {
   //Callback to get a list of archive sites
     urls.filter(function(url) {
-      archive.isUrlArchived(url, function(found) {
+      archive.isUrlArchived(url)
+      .then(function(found) {
         if (!found) {
-          //Download new urllist
-          var arr = [];
-          arr.push(url);
-          archive.downloadUrls(arr);
+          var urlArray = [];
+          urlArray.push(url);
+          archive.downloadUrls(urlArray);
         }
+      })
+      .catch(function(err) {
+        console.log(err);
       });
     });
   //Loop through list of urls
   //Remove all archived sites
+  })
+  .catch(function(err) {
+    console.log(err);
   });
-}();
-
-module.exports = htmlfetch;
+}());
