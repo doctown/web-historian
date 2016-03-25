@@ -1,0 +1,1 @@
+*/1 * * * * /usr/local/bin/node /Users/student/2016-02-web-historian/workers/htmlfetcher.js
