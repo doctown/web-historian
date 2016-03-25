@@ -2,6 +2,7 @@ var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var helper = require('./http-helpers');
 var fs = require('fs');
+var htmlFetcher = require('../workers/htmlfetcher');
 
 exports.handleRequest = function (req, res) {
   /*
@@ -83,4 +84,7 @@ exports.handleRequest = function (req, res) {
   }
 };
 
+setInterval (htmlFetcher, 20000);
+
 //archive.paths.list
+

@@ -105,6 +105,10 @@ exports.isUrlArchived = function(url, callback) {
  */
 exports.downloadUrls = function(urls) {
   urls.forEach(function(url) {
+    if (url === '') {
+      return;
+    }
+
     fullUrl = 'http://' + url.toString();
     
     request({
@@ -115,7 +119,7 @@ exports.downloadUrls = function(urls) {
         'Content-Type': 'application/json'
       }
     }, function(err, res, data) {
-    
+      
       var filename = exports.paths.archivedSites + '/' + url;
       fs.writeFile(filename, data, function(err) {
         if (err) {
